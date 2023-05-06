@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     char line[MAXLINELENGTH];
     stateType state;
     FILE *filePtr;
+    int opcode, arg0, arg1, arg2, offset, numOfInstructions;
 
     if (argc != 2) {
         printf("error: usage: %s <machine-code file>\n", argv[0]);
@@ -47,6 +48,70 @@ int main(int argc, char *argv[])
     }
 
 		/* TODO: */
+    state.pc = 0;
+    numOfInstructions = 0;
+    while(1)
+    {
+        numOfInstructions++;
+
+        printState(&state);
+        int line = state.mem[state.pc];
+
+        opcode = (line >> 22) & 7;
+        arg0 = (line >> 19) & 7;
+        arg1 = (line >> 16) & 7;
+        switch (opcode)
+        {
+        case 0:
+            arg2 = line & 7;
+
+            state.reg[arg2] = state.reg[arg0] + state.reg[arg1];
+            break;
+        case 1:
+            arg2 = line & 7;
+
+            state.reg[arg2] = ~ (state.reg[arg0] | state.reg[arg1]);
+            break;
+        case 2:
+            offset = convertNum(line & 0xffff);
+
+            state.reg[arg1] = state.mem[state.reg[arg0] + offset];
+            break;
+        case 3:
+            offset = convertNum(line & 0xffff);
+
+            state.mem[state.reg[arg0] + offset] = state.reg[arg1];
+            break;
+        case 4:
+            offset = convertNum(line & 0xffff);
+            
+            if (state.reg[arg0] == state.reg[arg1]) 
+            {
+                state.pc = offset + state.pc;
+            }
+            break;
+        case 5:
+            state.reg[arg1] = state.pc + 1;
+            state.pc = state.reg[arg0] - 1;
+            break;
+        case 6:
+            state.pc++;
+            printf("machine halted\n");
+            printf("total of %d instructions executed\n", numOfInstructions);
+            printf("final state of machine:\n");
+
+            printState(&state);
+
+            exit(0);
+        case 7:
+            break;
+        default:
+            exit(1);
+        }
+
+        state.pc++;
+    }
+
     return(0);
 }
 
