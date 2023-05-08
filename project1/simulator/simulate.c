@@ -36,6 +36,11 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    for (int i = 0; i < NUMREGS; i++)
+    {
+        state.reg[i] = 0;
+    }
+
     /* read in the entire machine-code file into memory */
     for (state.numMemory = 0; fgets(line, MAXLINELENGTH, filePtr) != NULL;
             state.numMemory++) {
