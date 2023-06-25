@@ -1,6 +1,6 @@
 # ITE2031
 
-## COMPUTER STRUCTURE
+## Computer Architecture
 
 PROJECT 1
 - SCORE : 17 / 20
