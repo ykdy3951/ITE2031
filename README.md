@@ -3,4 +3,4 @@
 ## Computer Architecture
 
 PROJECT 1
-- SCORE : 17 / 20
+- SCORE : 19 / 20
